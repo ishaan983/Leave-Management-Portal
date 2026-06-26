@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apply Leave | Leave Portal</title>
+  <link rel="stylesheet" href="/output.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <nav class="bg-white shadow px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-blue-600">Leave Portal</h1>
+    <div class="flex items-center gap-4">
+      <span class="text-sm text-gray-600">👋 Hello, <%= user.name %></span>
+      <a href="/logout" class="text-sm text-red-500 hover:underline">Logout</a>
+    </div>
+  </nav>
+  <div class="max-w-lg mx-auto mt-8 px-4">
+    <div class="bg-white rounded-xl shadow p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Apply for Leave</h2>
+        <a href="/employee/dashboard" class="text-sm text-blue-600 hover:underline">← Back</a>
+      </div>
+
+      <% if (error) { %>
+        <div class="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-sm">
+          <%= error %>
+        </div>
+      <% } %>
+
+      <form action="/employee/apply" method="POST" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Leave Type</label>
+          <select
+            name="leaveType"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="sick">Sick Leave</option>
+            <option value="casual">Casual Leave</option>
+            <option value="annual">Annual Leave</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+          <input
+            type="date"
+            name="startDate"
+            required
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+          <input
+            type="date"
+            name="endDate"
+            required
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Reason</label>
+          <textarea
+            name="reason"
+            required
+            rows="4"
+            placeholder="Briefly explain your reason..."
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          ></textarea>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+        >
+          Submit Request
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -13,6 +13,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use('/', require('./routes/auth'));
+app.use('/employee', require('./routes/leave'));
 
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>console.log("mongodb connected"))

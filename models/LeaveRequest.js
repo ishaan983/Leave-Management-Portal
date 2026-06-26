@@ -30,3 +30,5 @@ const leaveRequestSchema = new mongoose.Schema({
         default: 'pending'
     }
 }, {timestamps: true});
+
+module.exports = mongoose.model("LeaveRequest", leaveRequestSchema);
