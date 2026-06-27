@@ -3,42 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee Dashboard | Leave Portal</title>
+  <title>Admin Dashboard | Leave Portal</title>
   <link rel="stylesheet" href="/output.css">
 </head>
 <body class="bg-gray-100 min-h-screen">
   <nav class="bg-white shadow px-6 py-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold text-blue-600">Employee Dashboard</h1>
+    <h1 class="text-xl font-bold text-blue-600">Admin Dashboard</h1>
     <div class="flex items-center gap-4">
       <span class="text-sm text-gray-600">Hello, <%= user.name %></span>
       <a href="/logout" class="text-sm text-red-500 hover:underline">Logout</a>
     </div>
   </nav>
 
-  <div class="max-w-4xl mx-auto mt-8 px-4">
+  <div class="max-w-6xl mx-auto mt-8 px-4">
+
     <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold text-gray-800">My Leave Requests</h2>
-      <a href="/employee/apply" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition"> + Apply Leave</a>
+      <h2 class="text-2xl font-bold text-gray-800">All Leave Requests</h2>
+      <span class="text-sm text-gray-500">Total: <%= leaves.length %> requests</span>
     </div>
+
     <div class="bg-white rounded-xl shadow overflow-hidden">
       <% if (leaves.length === 0) { %>
         <div class="text-center text-gray-500 py-12">
-          No leave requests yet. Click "Apply Leave".
+          No leave requests found.
         </div>
       <% } else { %>
         <table class="w-full text-sm">
           <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
             <tr>
+              <th class="px-6 py-3 text-left">Employee</th>
+              <th class="px-6 py-3 text-left">Email</th>
               <th class="px-6 py-3 text-left">Type</th>
               <th class="px-6 py-3 text-left">Start Date</th>
               <th class="px-6 py-3 text-left">End Date</th>
               <th class="px-6 py-3 text-left">Reason</th>
               <th class="px-6 py-3 text-left">Status</th>
+              <th class="px-6 py-3 text-left">Action</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
             <% leaves.forEach(leave => { %>
               <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium"><%= leave.employee.name %></td>
+                <td class="px-6 py-4 text-gray-500"><%= leave.employee.email %></td>
                 <td class="px-6 py-4 capitalize"><%= leave.leaveType %></td>
                 <td class="px-6 py-4"><%= leave.startDate.toDateString() %></td>
                 <td class="px-6 py-4"><%= leave.endDate.toDateString() %></td>
@@ -52,14 +59,39 @@
                     <span class="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium">Rejected</span>
                   <% } %>
                 </td>
+
+                <td class="px-6 py-4">
+                  <% if (leave.status === 'pending') { %>
+                    <div class="flex gap-2">
+                      <form action="/admin/leave/<%= leave._id %>/approve" method="POST">
+                        <button
+                          type="submit"
+                          class="bg-green-500 text-white px-3 py-1 rounded text-xs font-semibold hover:bg-green-600 transition"
+                        >
+                          Approve
+                        </button>
+                      </form>
+                      <form action="/admin/leave/<%= leave._id %>/reject" method="POST">
+                        <button
+                          type="submit"
+                          class="bg-red-500 text-white px-3 py-1 rounded text-xs font-semibold hover:bg-red-600 transition"
+                        >
+                          Reject
+                        </button>
+                      </form>
+                    </div>
+                  <% } else { %>
+                    <span class="text-gray-400 text-xs">No action needed</span>
+                  <% } %>
+                </td>
+
               </tr>
             <% }) %>
           </tbody>
         </table>
       <% } %>
     </div>
-
   </div>
-  
+
 </body>
 </html>

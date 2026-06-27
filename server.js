@@ -14,6 +14,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use('/', require('./routes/auth'));
 app.use('/employee', require('./routes/leave'));
+app.use('/admin', require('./routes/admin'));
 
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>console.log("mongodb connected"))
