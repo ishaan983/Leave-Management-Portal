@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const LeaveRequest = require('../models/LeaveRequest');
-const { authMiddleware, isAdmin} = require('../Middleware/authMiddleware');
+const { authMiddleware, isAdmin} = require('../middleware/authMiddleware');
 
 router.get('/dashboard', authMiddleware, isAdmin, async function(req, res){
     try{
