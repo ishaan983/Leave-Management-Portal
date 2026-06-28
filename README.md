@@ -56,17 +56,17 @@ http://localhost:3000/register
 
 ## Project Structure
 
+```text
 LeavePortal/
-
 ├── models/
 │   ├── User.js
 │   └── LeaveRequest.js
+├── middleware/
+│   └── authMiddleware.js
 ├── routes/
 │   ├── auth.js
 │   ├── leave.js
 │   └── admin.js
-├── middleware/
-│   └── authMiddleware.js
 ├── views/
 │   ├── login.ejs
 │   ├── register.ejs
@@ -78,6 +78,7 @@ LeavePortal/
 ├── .env
 ├── server.js
 └── package.json
+```
 
 ## Usage
 
