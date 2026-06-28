@@ -20,26 +20,25 @@ A web application where employees can apply for leave requests and administrator
 
 ## Prerequisites
 
-Make sure to have these installed:
-- [Node.js]
-- [MongoDB]
+- Node.js installed
+- MongoDB installed and running locally
 
 ## Setup Instructions
 
 ### 1. Clone the repository
 
-git clone https://github.com/yourusername/Leave-Management-Portal.git
-cd LeavePortal
+git clone https://github.com/ishaan983/Leave-Management-Portal.git
+cd Leave-Management-Portal
 
 ### 2. Install dependencies
 
 npm install
 
-### 3. Create `.env` file in the root folder
+### 3. Create .env file in the root folder
 
 env
 MONGO_URI=mongodb://localhost:27017/leaveportal
-JWT_SECRET=leaveportal_secret_key_123
+JWT_SECRET=your_jwt_secret
 PORT=3000
 
 ### 4. Build Tailwind CSS
