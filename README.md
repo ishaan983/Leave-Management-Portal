@@ -19,8 +19,9 @@ A web application where employees can apply for leave requests and administrator
 - Validation and Security
 
 ## Prerequisites
+Make sure to have these installed:
 
-- Node.js installed
+- Node.js
 - MongoDB installed and running locally
 
 ## Setup Instructions
