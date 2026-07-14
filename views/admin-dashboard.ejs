@@ -91,6 +91,56 @@
         </table>
       <% } %>
     </div>
+  
+
+    <div class="mt-10">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Employee Attendance</h2>
+
+      <div class="bg-white rounded-xl shadow overflow-hidden">
+        <% if (attendance.length === 0) { %>
+          <div class="text-center text-gray-500 py-12">
+            No attendance records found.
+          </div>
+        <% } else { %>
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+              <tr>
+                <th class="px-6 py-3 text-left">Employee</th>
+                <th class="px-6 py-3 text-left">Email</th>
+                <th class="px-6 py-3 text-left">Date</th>
+                <th class="px-6 py-3 text-left">Punch In</th>
+                <th class="px-6 py-3 text-left">Punch Out</th>
+                <th class="px-6 py-3 text-left">Status</th>
+                <th class="px-6 py-3 text-left">Location</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <% attendance.forEach(record => { %>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 font-medium"><%= record.employee.name %></td>
+                  <td class="px-6 py-4 text-gray-500"><%= record.employee.email %></td>
+                  <td class="px-6 py-4"><%= record.date %></td>
+                  <td class="px-6 py-4 text-green-600 font-medium">
+                    <%= record.punchIn || '--' %>
+                  </td>
+                  <td class="px-6 py-4 text-red-500 font-medium">
+                    <%= record.punchOut || '--' %>
+                  </td>
+                  <td class="px-6 py-4">
+                    <% if (record.status === 'late') { %>
+                      <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-medium">Late</span>
+                    <% } else { %>
+                      <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">On Time</span>
+                    <% } %>
+                  </td>
+                  <td class="px-6 py-4 text-gray-500 text-xs"><%= record.address || '--' %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+    </div>
   </div>
 
 </body>

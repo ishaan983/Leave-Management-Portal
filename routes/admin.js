@@ -2,11 +2,15 @@ const express = require('express');
 const router = express.Router();
 const LeaveRequest = require('../models/LeaveRequest');
 const { authMiddleware, isAdmin} = require('../middleware/authMiddleware');
+const Attendance = require("../models/Attendance");
 
 router.get('/dashboard', authMiddleware, isAdmin, async function(req, res){
     try{
         const leaves = await LeaveRequest.find().populate('employee', 'name email').sort({createdAt: -1});
-        res.render("admin-dashboard", {user: req.user, leaves});
+
+        const attendance = await Attendance.find().populate('employee', 'name email').sort({createdAt: -1});
+        
+        res.render("admin-dashboard", {user: req.user, leaves, attendance});
     }
     catch(err){
         console.log(err);
