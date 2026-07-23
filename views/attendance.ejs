@@ -28,6 +28,11 @@
       <div id="map" style="height: 250px; width: 100%;"></div>
 
       <div class="p-6">
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="bg-red-100 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
+            ⚠️ <%= error %>
+          </div>
+        <% } %>
         <h2 class="text-xl font-bold text-gray-800">Hello, <%= user.name %>!</h2>
         <p id="current-date" class="text-gray-400 text-sm mt-1"></p>
         <p id="current-time" class="text-gray-400 text-sm"></p>
@@ -108,7 +113,7 @@
   </div>
 
   <script>
-  // ---LIVE CLOCK---
+  // LIVE CLOCK
   function updateTime() {
     const now = new Date();
     document.getElementById('current-date').textContent = now.toDateString();
