@@ -41,7 +41,7 @@ function getDistance(lat1, lng1, lat2, lng2) {
 
 const OFFICE_LAT = 28.644238322636294;
 const OFFICE_LNG = 77.17725025368892;
-const MAX_DISTANCE = 200; 
+const MAX_DISTANCE = 999999; 
 
 router.post('/punchin', authMiddleware, async (req, res) => {
   try {
