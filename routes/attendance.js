@@ -2,10 +2,11 @@ const express=require('express');
 const router = express.Router();
 const Attendance = require('../models/Attendance');
 const {authMiddleware} = require('../middleware/authMiddleware');
+const { getBusinessDate } = require('../utils/attendance');
 
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getBusinessDate();
 
     const existingRecord = await Attendance.findOne({
       employee: req.user.id,
@@ -45,7 +46,7 @@ const MAX_DISTANCE = 999999;
 
 router.post('/punchin', authMiddleware, async (req, res) => {
   try {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getBusinessDate();
     const { lat, lng, address } = req.body;
 
     const existing = await Attendance.findOne({
@@ -53,7 +54,7 @@ router.post('/punchin', authMiddleware, async (req, res) => {
       date: today
     });
 
-    if (existing) {
+    if (existing && existing.status !== 'absent') {
       return res.redirect('/attendance');
     }
 
@@ -84,17 +85,19 @@ router.post('/punchin', authMiddleware, async (req, res) => {
     const hour = now.getHours();
     const status = hour >= 10 ? 'late' : 'present';
 
-    const attendance = new Attendance({
-      employee: req.user.id,
-      date: today,
+    const attendanceData = {
       punchIn: punchInTime,
       location: { lat, lng },
       address,
       status,
       distance: Math.round(distance)
-    });
+    };
 
-    await attendance.save();
+    if (existing) {
+      await Attendance.findByIdAndUpdate(existing._id, attendanceData);
+    } else {
+      await Attendance.create({ employee: req.user.id, date: today, ...attendanceData });
+    }
     res.redirect('/attendance');
   } catch (err) {
     console.log(err);
@@ -104,7 +107,7 @@ router.post('/punchin', authMiddleware, async (req, res) => {
 
 router.post('/punchout', authMiddleware, async (req, res) => {
   try {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getBusinessDate();
 
     const now = new Date();
     const punchOutTime = now.toLocaleTimeString('en-US', {
@@ -126,4 +129,3 @@ router.post('/punchout', authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
-

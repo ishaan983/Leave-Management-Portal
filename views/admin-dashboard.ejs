@@ -6,201 +6,242 @@
   <title>Admin Dashboard | Leave Portal</title>
   <link rel="stylesheet" href="/output.css">
 </head>
-<body class="bg-gray-100 min-h-screen">
-  <nav class="bg-white shadow px-6 py-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold text-blue-600">Admin Dashboard</h1>
-    <div class="flex items-center gap-4">
-      <span class="text-sm text-gray-600">Hello, <%= user.name %></span>
-      <a href="/logout" class="text-sm text-red-500 hover:underline">Logout</a>
-    </div>
-  </nav>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+  <% const pendingLeaves = leaves.filter(leave => leave.status === 'pending').length; %>
+  <% const approvedLeaves = leaves.filter(leave => leave.status === 'approved').length; %>
 
-  <div class="max-w-6xl mx-auto mt-8 px-4">
-
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold text-gray-800">All Leave Requests</h2>
-      <span class="text-sm text-gray-500">Total: <%= leaves.length %> requests</span>
-    </div>
-
-    <div class="bg-white rounded-xl shadow overflow-hidden">
-      <% if (leaves.length === 0) { %>
-        <div class="text-center text-gray-500 py-12">
-          No leave requests found.
-        </div>
-      <% } else { %>
-        <table class="w-full text-sm">
-          <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
-            <tr>
-              <th class="px-6 py-3 text-left">Employee</th>
-              <th class="px-6 py-3 text-left">Email</th>
-              <th class="px-6 py-3 text-left">Type</th>
-              <th class="px-6 py-3 text-left">Start Date</th>
-              <th class="px-6 py-3 text-left">End Date</th>
-              <th class="px-6 py-3 text-left">Reason</th>
-              <th class="px-6 py-3 text-left">Status</th>
-              <th class="px-6 py-3 text-left">Action</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100">
-            <% leaves.forEach(leave => { %>
-              <tr class="hover:bg-gray-50">
-                <td class="px-6 py-4 font-medium"><%= leave.employee.name %></td>
-                <td class="px-6 py-4 text-gray-500"><%= leave.employee.email %></td>
-                <td class="px-6 py-4 capitalize"><%= leave.leaveType %></td>
-                <td class="px-6 py-4"><%= leave.startDate.toDateString() %></td>
-                <td class="px-6 py-4"><%= leave.endDate.toDateString() %></td>
-                <td class="px-6 py-4"><%= leave.reason %></td>
-                <td class="px-6 py-4">
-                  <% if (leave.status === 'pending') { %>
-                    <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-medium">Pending</span>
-                  <% } else if (leave.status === 'approved') { %>
-                    <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">Approved</span>
-                  <% } else { %>
-                    <span class="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium">Rejected</span>
-                  <% } %>
-                </td>
-
-                <td class="px-6 py-4">
-                  <% if (leave.status === 'pending') { %>
-                    <div class="flex gap-2">
-                      <form action="/admin/leave/<%= leave._id %>/approve" method="POST">
-                        <button
-                          type="submit"
-                          class="bg-green-500 text-white px-3 py-1 rounded text-xs font-semibold hover:bg-green-600 transition"
-                        >
-                          Approve
-                        </button>
-                      </form>
-                      <form action="/admin/leave/<%= leave._id %>/reject" method="POST">
-                        <button
-                          type="submit"
-                          class="bg-red-500 text-white px-3 py-1 rounded text-xs font-semibold hover:bg-red-600 transition"
-                        >
-                          Reject
-                        </button>
-                      </form>
-                    </div>
-                  <% } else { %>
-                    <span class="text-gray-400 text-xs">No action needed</span>
-                  <% } %>
-                </td>
-
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
-      <% } %>
-    </div>
-  
-
-<div class="mt-10">
-  <h2 class="text-2xl font-bold text-gray-800 mb-6">Employee Attendance</h2>
-
-  <div class="grid grid-cols-3 gap-4 mb-6">
-    <div class="bg-white rounded-xl shadow p-6 text-center">
-      <p class="text-sm text-gray-500 mb-1">Total Present</p>
-      <p class="text-4xl font-bold text-green-600"><%= analytics.totalPresent %></p>
-      <p class="text-xs text-gray-400 mt-1">Today</p>
-    </div>
-    <div class="bg-white rounded-xl shadow p-6 text-center">
-      <p class="text-sm text-gray-500 mb-1">Total Late</p>
-      <p class="text-4xl font-bold text-yellow-500"><%= analytics.totalLate %></p>
-      <p class="text-xs text-gray-400 mt-1">Today</p>
-    </div>
-    <div class="bg-white rounded-xl shadow p-6 text-center">
-      <p class="text-sm text-gray-500 mb-1">Total Absent</p>
-      <p class="text-4xl font-bold text-red-500"><%= analytics.totalAbsent %></p>
-      <p class="text-xs text-gray-400 mt-1">Today</p>
-    </div>
-  </div>
-
-  
-  <form method="GET" action="/admin/dashboard" class="flex items-end gap-6 mb-8">
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Filter by Date</label>
-      <input
-        type="date"
-        name="date"
-        value="<%= selectedDate %>"
-        class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
-      <select
-        name="status"
-        class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        <option value="all" <%= selectedStatus === 'all' ? 'selected' : '' %>>All</option>
-        <option value="present" <%= selectedStatus === 'present' ? 'selected' : '' %>>On Time</option>
-        <option value="late" <%= selectedStatus === 'late' ? 'selected' : '' %>>Late</option>
-      </select>
-    </div>
-    <div class="flex items-end">
-      <button
-        type="submit"
-        class="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition"
-      >
-        Apply Filter
-      </button>
-    </div>
-
-    <div class="flex items-end">
-      <a href="/admin/attendance/export?date=<%= selectedDate %>&status=<%= selectedStatus %>" class="bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition">Export to Excel
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <a href="/admin/dashboard">
+        <p class="text-base font-bold text-slate-900">Leave Portal</p>
+        <p class="text-xs font-medium text-slate-500"></p>
       </a>
-    </div>
-  </form>
 
-      <div class="bg-white rounded-xl shadow overflow-hidden">
-        <% if (attendance.length === 0) { %>
-          <div class="text-center py-10">
-            <div class="text-4xl mb-3"></div>
-            <h3 class="text-lg font-semibold text-gray-700">No attendance records</h3>
-            <p class="text-sm text-gray-500 mt-1">
-              No attendance found for the selected date.
-            </p>
-          </div>
-        <% } else { %>
-          <table class="w-full text-sm">
-            <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
-              <tr>
-                <th class="px-6 py-3 text-left">Employee</th>
-                <th class="px-6 py-3 text-left">Email</th>
-                <th class="px-6 py-3 text-left">Date</th>
-                <th class="px-6 py-3 text-left">Punch In</th>
-                <th class="px-6 py-3 text-left">Punch Out</th>
-                <th class="px-6 py-3 text-left">Status</th>
-                <th class="px-6 py-3 text-left">Location</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-              <% attendance.forEach(record => { %>
-                <tr class="hover:bg-gray-50">
-                  <td class="px-6 py-4 font-medium"><%= record.employee.name %></td>
-                  <td class="px-6 py-4 text-gray-500"><%= record.employee.email %></td>
-                  <td class="px-6 py-4"><%= record.date %></td>
-                  <td class="px-6 py-4 text-green-600 font-medium">
-                    <%= record.punchIn || '--' %>
-                  </td>
-                  <td class="px-6 py-4 text-red-500 font-medium">
-                    <%= record.punchOut || '--' %>
-                  </td>
-                  <td class="px-6 py-4">
-                    <% if (record.status === 'late') { %>
-                      <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-medium">Late</span>
-                    <% } else { %>
-                      <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">On Time</span>
-                    <% } %>
-                  </td>
-                  <td class="px-6 py-4 text-gray-500 text-xs"><%= record.address || '--' %></td>
-                </tr>
-              <% }) %>
-            </tbody>
-          </table>
-        <% } %>
+      <div class="flex items-center gap-3 sm:gap-5">
+        <div class="hidden text-right sm:block">
+          <p class="text-sm font-semibold text-slate-800"><%= user.name %></p>
+          <p class="text-xs text-slate-500">Administrator</p>
+        </div>
+        <a
+          href="/logout"
+          class="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+        >
+          Logout
+        </a>
       </div>
     </div>
-  </div>
+  </header>
 
+  <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <section class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+      <div>
+        <p class="mb-1 text-sm font-semibold text-blue-600"></p>
+        <h1 class="text-3xl font-bold tracking-tight text-slate-900">
+          Welcome back, <%= user.name.split(' ')[0] %>.
+        </h1>
+        <p class="mt-2 text-sm text-slate-500">
+          Review leave requests and keep track of today’s attendance.
+        </p>
+      </div>
+      <a
+        href="#attendance"
+        class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
+      >
+        View attendance
+      </a>
+    </section>
+
+    <section aria-label="Summary" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div class="rounded-2xl border border-blue-100 bg-blue-600 p-5 text-white shadow-sm">
+        <p class="text-sm font-medium text-blue-100">Pending leave requests</p>
+        <p class="mt-4 text-4xl font-bold"><%= pendingLeaves %></p>
+        <p class="mt-1 text-xs font-medium text-blue-100"></p>
+      </div>
+
+      <div class="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
+        <p class="text-sm font-medium text-slate-500">Present today</p>
+        <div class="mt-4 flex items-end justify-between">
+          <p class="text-4xl font-bold text-emerald-600"><%= analytics.totalPresent %></p>
+          <span class="text-xs font-semibold text-emerald-600">Checked in</span>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-amber-100 bg-white p-5 shadow-sm">
+        <p class="text-sm font-medium text-slate-500">Late today</p>
+        <div class="mt-4 flex items-end justify-between">
+          <p class="text-4xl font-bold text-amber-500"><%= analytics.totalLate %></p>
+          <span class="text-xs font-semibold text-amber-600"></span>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-rose-100 bg-white p-5 shadow-sm">
+        <p class="text-sm font-medium text-slate-500">Absent today</p>
+        <div class="mt-4 flex items-end justify-between">
+          <p class="text-4xl font-bold text-rose-500"><%= analytics.totalAbsent %></p>
+          <span class="text-xs font-semibold text-rose-600">Not checked in</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-10">
+      <div class="mb-5 flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">Leave requests</h2>
+          <p class="mt-1 text-sm text-slate-500">
+            <%= leaves.length %> total requests ·
+            <span class="font-medium text-emerald-600"><%= approvedLeaves %> approved</span>
+          </p>
+        </div>
+        <span class="w-fit rounded-full bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700">
+          <%= pendingLeaves %> pending
+        </span>
+      </div>
+
+      <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <% if (leaves.length === 0) { %>
+          <div class="px-6 py-16 text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-xl">✓</div>
+            <h3 class="mt-4 text-base font-semibold text-slate-800">No leave requests yet</h3>
+            <p class="mt-1 text-sm text-slate-500">New employee requests will appear here.</p>
+          </div>
+        <% } else { %>
+          <div class="overflow-x-auto">
+            <table class="min-w-[900px] w-full text-left text-sm">
+              <thead class="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th class="px-6 py-4">Employee</th>
+                  <th class="px-6 py-4">Leave details</th>
+                  <th class="px-6 py-4">Dates</th>
+                  <th class="px-6 py-4">Reason</th>
+                  <th class="px-6 py-4">Status</th>
+                  <th class="px-6 py-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <% leaves.forEach(leave => { %>
+                  <% const statusStyle = leave.status === 'pending'
+                    ? 'bg-amber-50 text-amber-700 ring-amber-600/20'
+                    : leave.status === 'approved'
+                      ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20'
+                      : 'bg-rose-50 text-rose-700 ring-rose-600/20'; %>
+                  <tr class="transition hover:bg-slate-50/80">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold text-slate-800"><%= leave.employee ? leave.employee.name : 'Deleted user' %></p>
+                      <p class="mt-0.5 text-xs text-slate-500"><%= leave.employee ? leave.employee.email : '—' %></p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <span class="rounded-md bg-blue-50 px-2 py-1 text-xs font-semibold capitalize text-blue-700"><%= leave.leaveType %></span>
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4 text-slate-600">
+                      <p><%= leave.startDate.toDateString() %></p>
+                      <p class="mt-0.5 text-xs text-slate-400">to <%= leave.endDate.toDateString() %></p>
+                    </td>
+                    <td class="max-w-xs px-6 py-4 text-slate-600">
+                      <p class="truncate" title="<%= leave.reason %>"><%= leave.reason %></p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset <%= statusStyle %>">
+                        <%= leave.status.charAt(0).toUpperCase() + leave.status.slice(1) %>
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                      <% if (leave.status === 'pending') { %>
+                        <div class="flex justify-end gap-2">
+                          <form action="/admin/leave/<%= leave._id %>/approve" method="POST">
+                            <button type="submit" class="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700">Approve</button>
+                          </form>
+                          <form action="/admin/leave/<%= leave._id %>/reject" method="POST">
+                            <button type="submit" class="rounded-lg border border-rose-200 px-3 py-2 text-xs font-semibold text-rose-600 transition hover:bg-rose-50">Reject</button>
+                          </form>
+                        </div>
+                      <% } else { %>
+                        <span class="text-xs font-medium text-slate-400">Completed</span>
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+    </section>
+
+    <section id="attendance" class="mt-10 scroll-mt-6">
+      <div class="mb-5">
+        <h2 class="text-xl font-bold text-slate-900">Attendance register</h2>
+        <p class="mt-1 text-sm text-slate-500">Filter records by date or status, then export them when needed.</p>
+      </div>
+
+      <form method="GET" action="/admin/dashboard" class="mb-5 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-end">
+        <div>
+          <label for="date" class="mb-1.5 block text-sm font-semibold text-slate-700">Date</label>
+          <input id="date" type="date" name="date" value="<%= selectedDate %>" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+        </div>
+        <div>
+          <label for="status" class="mb-1.5 block text-sm font-semibold text-slate-700">Status</label>
+          <select id="status" name="status" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+            <option value="all" <%= selectedStatus === 'all' ? 'selected' : '' %>>All records</option>
+            <option value="present" <%= selectedStatus === 'present' ? 'selected' : '' %>>On time</option>
+            <option value="late" <%= selectedStatus === 'late' ? 'selected' : '' %>>Late</option>
+            <option value="absent" <%= selectedStatus === 'absent' ? 'selected' : '' %>>Absent</option>
+          </select>
+        </div>
+        <button type="submit" class="rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-blue-700">Apply filters</button>
+        <a href="/admin/attendance/export?date=<%= selectedDate %>&status=<%= selectedStatus %>" class="rounded-lg border border-emerald-200 px-5 py-2 text-center text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50">Export Excel</a>
+      </form>
+
+      <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <% if (attendance.length === 0) { %>
+          <div class="px-6 py-16 text-center">
+            <div class="text-3xl">◷</div>
+            <h3 class="mt-3 text-base font-semibold text-slate-800">No attendance records</h3>
+            <p class="mt-1 text-sm text-slate-500">There are no records matching the selected filters.</p>
+          </div>
+        <% } else { %>
+          <div class="overflow-x-auto">
+            <table class="min-w-[800px] w-full text-left text-sm">
+              <thead class="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th class="px-6 py-4">Employee</th>
+                  <th class="px-6 py-4">Date</th>
+                  <th class="px-6 py-4">Punch in</th>
+                  <th class="px-6 py-4">Punch out</th>
+                  <th class="px-6 py-4">Status</th>
+                  <th class="px-6 py-4">Location</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <% attendance.forEach(record => { %>
+                  <% const attendanceStyle = record.status === 'late'
+                    ? 'bg-amber-50 text-amber-700'
+                    : record.status === 'absent'
+                      ? 'bg-rose-50 text-rose-700'
+                      : 'bg-emerald-50 text-emerald-700'; %>
+                  <tr class="transition hover:bg-slate-50/80">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold text-slate-800"><%= record.employee ? record.employee.name : 'Deleted user' %></p>
+                      <p class="mt-0.5 text-xs text-slate-500"><%= record.employee ? record.employee.email : '—' %></p>
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4 text-slate-600"><%= record.date %></td>
+                    <td class="whitespace-nowrap px-6 py-4 font-medium text-emerald-700"><%= record.punchIn || '—' %></td>
+                    <td class="whitespace-nowrap px-6 py-4 font-medium text-slate-600"><%= record.punchOut || '—' %></td>
+                    <td class="px-6 py-4">
+                      <span class="rounded-full px-2.5 py-1 text-xs font-semibold <%= attendanceStyle %>">
+                        <%= record.status === 'present' ? 'On time' : record.status.charAt(0).toUpperCase() + record.status.slice(1) %>
+                      </span>
+                    </td>
+                    <td class="max-w-xs px-6 py-4 text-xs text-slate-500">
+                      <p class="truncate" title="<%= record.address || '' %>"><%= record.address || '—' %></p>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+    </section>
+  </main>
 </body>
 </html>

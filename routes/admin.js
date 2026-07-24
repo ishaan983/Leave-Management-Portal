@@ -4,10 +4,11 @@ const express = require('express');
 const router = express.Router();
 const { authMiddleware, isAdmin } = require('../middleware/authMiddleware');
 const LeaveRequest = require('../models/LeaveRequest');
+const { getBusinessDate } = require('../utils/attendance');
 
 router.get('/dashboard', authMiddleware, isAdmin, async (req, res) => {
   try {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getBusinessDate();
 
     const selectedDate = req.query.date || today;
     const selectedStatus = req.query.status || 'all';
@@ -94,7 +95,7 @@ router.get('/attendance/export', authMiddleware, isAdmin, async (req, res) => {
         date: record.date,
         punchIn: record.punchIn || '--',
         punchOut: record.punchOut || '--',
-        status: record.status === 'late' ? 'Late' : 'On Time',
+        status: record.status === 'present' ? 'On Time' : record.status.charAt(0).toUpperCase() + record.status.slice(1),
         distance: record.distance || 0
       });
 
@@ -154,4 +155,3 @@ router.post('/leave/:id/reject', authMiddleware, isAdmin, async (req, res) => {
 });
 
 module.exports = router;
-
