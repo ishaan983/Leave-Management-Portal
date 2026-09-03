@@ -10,14 +10,15 @@ router.get('/register', function(req, res){
 
 router.post('/register', async function(req, res){
     try{
-        const {name, email, password, role} = req.body;
+        const {name, email, password} = req.body;
         const existingUser = await User.findOne({email});
         if(existingUser){
             return res.render('register', {error: "Email already registered"});
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
-        const user = new User({name, email, password: hashPassword, role});
+
+        const user = new User({name, email, password: hashPassword, role: 'employee'});
         await user.save();
 
         res.redirect('/login');
