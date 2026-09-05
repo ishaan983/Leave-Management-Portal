@@ -18,7 +18,10 @@ router.get('/dashboard', authMiddleware, isAdmin, async (req, res) => {
       .sort({ createdAt: -1 });
 
     const totalUsers = await User.countDocuments({ role: 'employee' });
-    const presentToday = await Attendance.countDocuments({ date: today });
+    const presentToday = await Attendance.countDocuments({
+      date: today,
+      status: { $ne: 'absent' } 
+    });
     const lateToday = await Attendance.countDocuments({ date: today, status: 'late' });
     const absentToday = totalUsers - presentToday;
 
